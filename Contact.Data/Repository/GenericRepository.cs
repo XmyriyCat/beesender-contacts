@@ -59,24 +59,28 @@ public class GenericRepository<T> : IRepository<T> where T : class
     }
 
 
-    public virtual async Task AddAsync(T entity, CancellationToken token = default)
+    public virtual async Task<T> AddAsync(T entity, CancellationToken token = default)
     {
         await DbSet.AddAsync(entity, token);
+        
+        return entity;
     }
 
     public virtual T Update(T entity)
     {
         DbSet.Update(entity);
+        
         return entity;
     }
 
     public virtual bool Delete(T entity)
     {
         DbSet.Remove(entity);
+        
         return true;
     }
 
-    public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default)
+    public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default)
     {
         return await DbSet.AnyAsync(predicate, token);
     }

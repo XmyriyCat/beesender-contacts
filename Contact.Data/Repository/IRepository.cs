@@ -11,13 +11,13 @@ public interface IRepository<T> where T : class
 
     Task<IEnumerable<T>> GetAllAsync(int page, int pageSize, params Expression<Func<T, object>>[]? includes);
 
-    Task AddAsync(T entity, CancellationToken token = default);
+    Task<T> AddAsync(T entity, CancellationToken token = default);
 
     T Update(T entity);
 
     bool Delete(T entity);
 
-    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default);
+    Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default);
     
     Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null, CancellationToken token = default);
 }
