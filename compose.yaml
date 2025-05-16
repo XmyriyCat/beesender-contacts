@@ -1,0 +1,6 @@
+﻿services:
+  contact.api:
+    image: contact.api
+    build:
+      context: .
+      dockerfile: Contact.Api/Dockerfile
