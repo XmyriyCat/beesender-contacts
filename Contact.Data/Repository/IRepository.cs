@@ -9,7 +9,7 @@ public interface IRepository<T> where T : class
     Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default,
         params Expression<Func<T, object>>[]? includes);
 
-    Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes);
+    Task<IEnumerable<T>> GetAllAsync(int page, int pageSize, params Expression<Func<T, object>>[]? includes);
 
     Task AddAsync(T entity, CancellationToken token = default);
 
@@ -18,4 +18,6 @@ public interface IRepository<T> where T : class
     bool Delete(T entity);
 
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default);
+    
+    Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null, CancellationToken token = default);
 }

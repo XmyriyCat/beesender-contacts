@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Contact.Data.Variables;
 using Microsoft.EntityFrameworkCore;
 
 namespace Contact.Data.Repository;
@@ -35,8 +36,12 @@ public class GenericRepository<T> : IRepository<T> where T : class
         return await query.FirstOrDefaultAsync(predicate, token);
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes)
+    public virtual async Task<IEnumerable<T>> GetAllAsync(int page, int pageSize,
+        params Expression<Func<T, object>>[]? includes)
     {
+        page = Math.Max(page, PagedOptions.Page);
+        pageSize = Math.Max(pageSize, PagedOptions.Page);
+        
         IQueryable<T> query = DbSet;
 
         if (includes is not null)
@@ -47,8 +52,12 @@ public class GenericRepository<T> : IRepository<T> where T : class
             }
         }
 
-        return await query.ToListAsync();
+        return await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
+
 
     public virtual async Task AddAsync(T entity, CancellationToken token = default)
     {
@@ -70,5 +79,16 @@ public class GenericRepository<T> : IRepository<T> where T : class
     public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken token = default)
     {
         return await DbSet.AnyAsync(predicate, token);
+    }
+
+    public virtual async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null,
+        CancellationToken token = default)
+    {
+        if (predicate is not null)
+        {
+            return await DbSet.CountAsync(predicate, token);
+        }
+
+        return await DbSet.CountAsync(token);
     }
 }
