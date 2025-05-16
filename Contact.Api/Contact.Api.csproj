@@ -17,4 +17,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Contact.Applicatioin\Contact.Applicatioin.csproj" />
+      <ProjectReference Include="..\Contacts.Contracts\Contacts.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>
