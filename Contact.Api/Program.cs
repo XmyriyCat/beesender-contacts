@@ -1,3 +1,5 @@
+using Contact.Api.Extensions;
+
 namespace Contact.Api;
 
 public class Program
@@ -9,7 +11,13 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
         
+        builder.Services
+            .ConfigureMsSqlContext(builder.Configuration)
+            .ConfigureRepositories();
+        
         var app = builder.Build();
+
+        await app.MigrateDbAsync();
         
         if (app.Environment.IsDevelopment())
         {
