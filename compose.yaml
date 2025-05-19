@@ -1,6 +1,36 @@
 ﻿services:
-  contact.api:
-    image: contact.api
-    build:
-      context: .
-      dockerfile: Contact.Api/Dockerfile
+  # contact.api:
+  #   image: contact.api
+  #   container_name: contact-api
+  #   build:
+  #     context: .
+  #     dockerfile: Contact.Api/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - dev_network
+
+  db:
+    image: mcr.microsoft.com/mssql/server:latest
+    container_name: mssql-db
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "DB_Password"
+    networks:
+      - dev_network
+    volumes:
+      - mssql_data:/var/opt/mssql
+      - ./db-init/init.sql:/db/init.sql
+      - ./db-init/entrypoint.sh:/entrypoint.sh
+    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
+
+networks:
+  dev_network:
+
+
+volumes:
+  mssql_data:
