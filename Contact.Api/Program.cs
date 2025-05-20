@@ -17,12 +17,14 @@ public class Program
             .ConfigureServices()
             .ConfigureMapster()
             .ConfigureNewtonsoftJson()
-            .AddFluentValidators();
+            .AddFluentValidators()
+            .ConfigureCors();
 
         var app = builder.Build();
 
-        app.UseGlobalExceptionHandler();
-        
+        app.UseGlobalExceptionHandler()
+            .UseConfiguredCors();
+
         await app.MigrateDbAsync();
 
         if (app.Environment.IsDevelopment())
