@@ -1,4 +1,5 @@
 using Contact.Api.Middlewares;
+using Contact.Api.Variables;
 using Contact.Application;
 using Contact.Application.Infrastructure.Mapster;
 using Contact.Application.Services.Contracts;
@@ -85,10 +86,32 @@ public static class ServiceExtension
 
         return services;
     }
-    
+
     public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder app)
     {
         app.UseMiddleware<GlobalExceptionHandler>();
+
+        return app;
+    }
+
+    public static IServiceCollection ConfigureCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(CorsValues.PolicyName, policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        return services;
+    }
+
+    public static IApplicationBuilder UseConfiguredCors(this IApplicationBuilder app)
+    {
+        app.UseCors(CorsValues.PolicyName);
 
         return app;
     }
