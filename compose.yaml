@@ -1,16 +1,16 @@
 ﻿services:
-  # contact.api:
-  #   image: contact.api
-  #   container_name: contact-api
-  #   build:
-  #     context: .
-  #     dockerfile: Contact.Api/Dockerfile
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - dev_network
+  contact.api:
+    image: contact.api
+    container_name: contact-api
+    build:
+      context: .
+      dockerfile: Contact.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - dev_network
 
   db:
     image: mcr.microsoft.com/mssql/server:latest
@@ -27,6 +27,19 @@
       - ./db-init/init.sql:/db/init.sql
       - ./db-init/entrypoint.sh:/entrypoint.sh
     entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
+
+  contact.client:
+    container_name: contact.client
+    build:
+      context: contact.client/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - contact.api
+    networks:
+      - dev_network
 
 networks:
   dev_network:
